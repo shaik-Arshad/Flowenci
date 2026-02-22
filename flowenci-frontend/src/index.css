@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    @apply bg-[#0e0c0a] text-[#f0ebe4] font-body;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3 { @apply font-display; }
+}
+
+@layer components {
+  .card {
+    @apply bg-[#141210] border border-[#2a2520] rounded-2xl;
+  }
+
+  .btn-primary {
+    @apply bg-brand-500 hover:bg-brand-400 text-white font-semibold
+           px-6 py-3 rounded-xl transition-all duration-200
+           active:scale-95 shadow-lg shadow-brand-500/20 cursor-pointer border-0;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent border border-[#2a2520] hover:border-[#3a342d]
+           hover:bg-[#1a1612] text-[#7a6e63] hover:text-[#f0ebe4]
+           font-semibold px-5 py-3 rounded-xl transition-all duration-200
+           cursor-pointer;
+  }
+
+  .label {
+    @apply text-xs font-semibold uppercase tracking-widest text-[#7a6e63];
+  }
+
+  .badge {
+    @apply text-xs font-semibold px-2.5 py-1 rounded-lg;
+  }
+
+  .input-field {
+    @apply w-full bg-[#1a1612] border border-[#2a2520] rounded-xl px-4 py-3
+           text-[#f0ebe4] placeholder-[#3a342d] focus:outline-none
+           focus:border-brand-500 transition-colors;
+  }
+
+  /* Animated waveform bars for recording */
+  @keyframes wave {
+    0%, 100% { transform: scaleY(0.4); }
+    50%       { transform: scaleY(1); }
+  }
+
+  .wave-bar {
+    animation: wave 0.8s ease-in-out infinite;
+  }
+
+  /* Recording pulse ring */
+  @keyframes recordPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+    50%       { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+  }
+  .recording-pulse { animation: recordPulse 1.2s ease-in-out infinite; }
+
+  /* Fade-up animation */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-up { animation: fadeUp 0.3s ease forwards; }
+
+  /* Stagger children */
+  .stagger > *:nth-child(1) { animation: fadeUp 0.3s 0.05s both; }
+  .stagger > *:nth-child(2) { animation: fadeUp 0.3s 0.1s  both; }
+  .stagger > *:nth-child(3) { animation: fadeUp 0.3s 0.15s both; }
+  .stagger > *:nth-child(4) { animation: fadeUp 0.3s 0.2s  both; }
+}
