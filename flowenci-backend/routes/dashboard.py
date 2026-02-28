@@ -68,7 +68,35 @@ def get_stats(
         else:
             next_focus = "Great progress! Keep practicing to reach 75+ readiness"
 
+    # Fetch detailed feedback for the latest recording to get skill breakdown
+    latest_rec = recordings[-1]
+    latest_fb = feedbacks_map.get(latest_rec["id"])
+    
+    skill_breakdown = []
+    last_session = None
+    
+    if latest_fb:
+        skill_breakdown = [
+            {"skill": "Communication", "value": latest_fb.get("confidence_score", 0), "color": "bg-cyan-500"},
+            {"skill": "Fluency", "value": max(0, 100 - (latest_fb.get("filler_word_count", 0) * 5)), "color": "bg-amber-500"},
+            {"skill": "Grammar Accuracy", "value": latest_fb.get("readiness_score", 0), "color": "bg-teal-500"},
+            {"skill": "Vocabulary Range", "value": min(100, latest_fb.get("total_word_count", 0) / 2), "color": "bg-red-500"},
+            {"skill": "Confidence Score", "value": latest_fb.get("confidence_score", 0), "color": "bg-cyan-400"},
+        ]
+        
+        last_session = {
+            "score": latest_fb.get("readiness_score", 0),
+            "change": f"+{round(readiness_score - feedbacks[0].get('readiness_score', 0), 1)}" if len(feedbacks) > 1 else "0",
+            "strengths": latest_fb.get("coaching_tips", [])[:3] if isinstance(latest_fb.get("coaching_tips"), list) else ["Good progress"],
+            "improvements": latest_fb.get("confidence_flags", [])[:3] if isinstance(latest_fb.get("confidence_flags"), list) else ["Continue practicing"]
+        }
+
+    # Mock/Calculate additional fields for enhanced dashboard
+    # In a real app, these might come from a 'user_profiles' or 'user_stats' table
     return {
+        "track": "Product Management Track",
+        "overall_progress": 67,
+        "weekly_change": "+12%",
         "total_recordings": len(recordings),
         "questions_practiced": unique_questions,
         "total_practice_minutes": round(total_duration / 60, 1),
@@ -77,4 +105,29 @@ def get_stats(
         "filler_trend": filler_trend[-20:],      # last 20 attempts
         "readiness_trend": readiness_trend[-20:],
         "next_focus": next_focus,
+        "skill_breakdown": skill_breakdown,
+        "last_session": last_session,
+        "latest_recording_id": latest_rec["id"],
+        "today_tasks": [
+            {"text": "Complete vocabulary drill (5 mins)", "completed": False},
+            {"text": "Practice STAR framework responses", "completed": True},
+            {"text": "Review last session feedback", "completed": False}
+        ],
+        "next_milestone": "Complete 10 mock interviews",
+        "milestone_progress": min(100, (len(recordings) / 10) * 100),
+        "gamification": {
+            "streak": 7,
+            "xp": 2847,
+            "level": 12,
+            "next_level_progress": 73
+        },
+        "avg_speaking_speed": round(sum(f.get("words_per_minute", 0) for f in feedbacks) / len(feedbacks), 1) if feedbacks else 0,
+        "avg_filler_words": round(sum(f.get("filler_word_count", 0) for f in feedbacks) / len(feedbacks), 1) if feedbacks else 0,
+        "sessions_this_week": len([r for r in recordings if "2026-02" in r.get("created_at", "")]), # Generic check for this month
+        "ai_suggestions": [
+            "Focus on behavioral questions",
+            "Practice leadership scenarios",
+            "Improve storytelling",
+            "Work on technical depth"
+        ]
     }
